@@ -15,10 +15,8 @@ jobs:
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v4
-
-      - name: Clone timetable generator
-        run: |
-          git clone https://github.com/Simrail-Community-Tools/SimrailPaperTimetableGenerator.git timetable-generator
+        with:
+          submodules: recursive
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
