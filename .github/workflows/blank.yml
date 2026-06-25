@@ -31,9 +31,7 @@ jobs:
 
       - name: Copy files for generation
         run: |
-          rm -rf ./docs
           cp -r ./docs timetable-generator/output
-          rm -rf ./RunInfo
           cp -r ./RunInfo timetable-generator/RunInfo
 
       - name: Generate timetables
@@ -42,7 +40,9 @@ jobs:
 
       - name: Copy files for upload
         run: |
+          rm -rf ./docs
           cp -r timetable-generator/output ./docs
+          rm -rf ./RunInfo
           cp -r timetable-generator/RunInfo ./RunInfo
 
       - name: Upload files
