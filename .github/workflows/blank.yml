@@ -1,0 +1,55 @@
+name: Scheduled Job
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */12 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  run-repo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Clone timetable generator
+        run: |
+          git clone https://github.com/Simrail-Community-Tools/SimrailPaperTimetableGenerator.git timetable-generator
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: timetable-generator
+        run: npm ci
+
+      - name: Copy files for generation
+        run: |
+          rm -rf ./docs
+          cp -r ./docs timetable-generator/output
+          rm -rf ./RunInfo
+          cp -r ./RunInfo timetable-generator/RunInfo
+
+      - name: Generate timetables
+        working-directory: timetable-generator
+        run: npm run start
+
+      - name: Copy files for upload
+        run: |
+          cp -r timetable-generator/output ./docs
+          cp -r timetable-generator/RunInfo ./RunInfo
+
+      - name: Upload files
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+          git add .
+          git diff --staged --quiet || git commit -m "Generation: $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
