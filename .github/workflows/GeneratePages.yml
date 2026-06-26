@@ -2,6 +2,11 @@ name: Generate pages
 
 on:
   workflow_dispatch:
+    inputs:
+        skipHashMatch:
+          description: 'Setting to true will make sure pages are regenerated even if there is no change in the trains timetable'
+          type: boolean
+          default: false
   schedule:
     - cron: '0 */12 * * *'
 
@@ -30,6 +35,13 @@ jobs:
         working-directory: timetable-generator
         run: npm ci
 
+      - name: Apply SkipHashMatching setting if set
+        if: github.event_name == 'workflow_dispatch' && inputs.skipHashMatch == true
+        working-directory: timetable-generator
+        run: |
+          jq '.SkipHashMatching = true' src/settings.json > src/settings.tmp.json
+          mv src/settings.tmp.json src/settings.json
+
       - name: Build timetable generator
         working-directory: timetable-generator
         run: npm run build
@@ -49,6 +61,10 @@ jobs:
           cp -r timetable-generator/output ./docs
           rm -rf ./RunInfo
           cp -r timetable-generator/RunInfo ./RunInfo
+
+      - name: Restore settings.json
+        if: github.event_name == 'workflow_dispatch' && inputs.skipHashMatch == true
+        run: git checkout -- timetable-generator/src/settings.json
 
       - name: Upload files
         run: |
