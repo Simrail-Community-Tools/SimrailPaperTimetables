@@ -1,11 +1,10 @@
 name: Deploy Pages
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'docs/**'
+  workflow_run:
+    workflows: ["Generate pages"]
+    types:
+      - completed
 
 permissions:
   contents: read
