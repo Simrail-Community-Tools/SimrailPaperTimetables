@@ -39,8 +39,8 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.skipHashMatch == true
         working-directory: timetable-generator
         run: |
-          jq '.SkipHashMatching = true' src/settings.json > src/settings.tmp.json
-          mv src/settings.tmp.json src/settings.json
+          jq '.SkipHashMatching = true' src/settings/settings.json > src/settings/settings.tmp.json
+          mv src/settings/settings.tmp.json src/settings/settings.json
 
       - name: Build timetable generator
         working-directory: timetable-generator
@@ -64,7 +64,7 @@ jobs:
 
       - name: Restore settings.json
         if: github.event_name == 'workflow_dispatch' && inputs.skipHashMatch == true
-        run: git checkout -- timetable-generator/src/settings.json
+        run: git checkout -- timetable-generator/src/settings/settings.json
 
       - name: Upload files
         run: |
