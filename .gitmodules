@@ -1,4 +1,4 @@
 [submodule "timetable-generator"]
 	path = timetable-generator
 	url = https://github.com/Simrail-Community-Tools/SimrailPaperTimetableGenerator.git
-	branch = master
+	branch = main
