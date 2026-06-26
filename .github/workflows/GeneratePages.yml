@@ -62,10 +62,6 @@ jobs:
           rm -rf ./RunInfo
           cp -r timetable-generator/RunInfo ./RunInfo
 
-      - name: Restore settings.json
-        if: github.event_name == 'workflow_dispatch' && inputs.skipHashMatch == true
-        run: git checkout -- timetable-generator/src/settings/settings.json
-
       - name: Upload files
         run: |
           git config user.name "github-actions[bot]"
